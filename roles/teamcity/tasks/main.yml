@@ -1,0 +1,55 @@
+    - name: create user running teamcity
+      user: name={{teamcity_user}} home={{teamcity_user_home}} comment="User running TeamCity" generate_ssh_key=yes
+
+    - name: download teamcity
+      get_url: url=http://download.jetbrains.com/teamcity/TeamCity-{{version}}.tar.gz dest={{download_path}}
+
+    - name: unpack archive
+      command: tar -xvzf "{{download_path}}" --directory "{{install_dir}}" creates={{install_path}}
+
+    - name: Create teamcity data path folder
+      file: "state=directory path={{data_path}}"
+
+    - name: create teamcity jdbc folder
+      file: "state=directory path={{data_path}}/lib/jdbc"
+
+    - name: create teamcity config folder
+      file: "state=directory path={{data_path}}/config"
+
+    - name: set install directory owner
+      file: path={{install_path}} owner={{teamcity_user}} group={{teamcity_user}} recurse=yes state=directory
+
+    - name: copy teamcity startup script
+      template: src=teamcity_service_script.sh.j2 dest=/etc/init.d/teamcity mode=755
+
+    - name: configure teamcity to start on startup
+      command: update-rc.d teamcity defaults
+
+    - name: download jdbc driver to tmp path
+      get_url: url=http://download.softagency.net/MySQL/Downloads/Connector-J/mysql-connector-java-5.1.30.tar.gz dest=/tmp
+
+    - name: unpack jdbc driver archive
+      command: tar -xvzf "/tmp/mysql-connector-java-5.1.30.tar.gz" --directory "/tmp"
+
+    - name: move mysql connector to correct folder
+      command: mv "/tmp/mysql-connector-java-5.1.30/mysql-connector-java-5.1.30-bin.jar" {{data_path}}/lib/jdbc
+
+    - name: create teamcity database
+      mysql_db: name={{teamcity_db_name}} state=present login_user={{mysql_root_user}} login_password={{mysql_root_password}} encoding="utf8"
+
+    - name: copy template database properties for db
+      template:
+        src=database.properties.j2
+        dest={{data_path}}/config/database.properties
+        mode=755
+
+    - name: set data path directory owner
+      file:
+        path={{data_path}}
+        owner={{teamcity_user}}
+        group={{teamcity_user}}
+        recurse=yes
+        state=directory
+
+    - name: start teamcity now
+      service: name=teamcity state=started

@@ -1,0 +1,9 @@
+---
+
+- hosts: teamcity
+  sudo: yes
+  roles:
+     - role: common
+     - role: git
+     - role: mysql
+     - role: teamcity

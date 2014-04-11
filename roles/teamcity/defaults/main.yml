@@ -1,0 +1,17 @@
+mysql_root_user: root
+mysql_root_password: rSyagFyMp8aJNqV
+
+teamcity_db_name: teamcity
+teamcity_user: teamcity
+teamcity_user_home: "/home/{{teamcity_user}}"
+
+version: 8.1
+
+download_path: "{{teamcity_user_home}}/TeamCity-{{version}}.tar.gz"
+install_dir: "{{teamcity_user_home}}"
+install_path: "{{install_dir}}/TeamCity"
+
+data_path: "{{teamcity_user_home}}/TeamCityData"
+
+
+

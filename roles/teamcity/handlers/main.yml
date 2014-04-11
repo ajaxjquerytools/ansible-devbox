@@ -1,0 +1,8 @@
+- name: teamcity-start
+  service: name=teamcity start=started
+
+- name: teamcity-restart
+  service: name=teamcity state=restarted
+
+- name: teamcity-stop
+  service: name=teamcity state=stopped
