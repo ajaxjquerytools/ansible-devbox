@@ -1,0 +1,15 @@
+- hosts: frontend
+  sudo: yes
+
+  tasks:
+  - name: Java | add java repository
+    apt_repository: repo='ppa:webupd8team/java'
+ 
+  - name: Java | auto accept license
+    action: shell echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+ 
+  - name: Java | install Java 7
+    action: apt pkg=oracle-java7-installer state=installed update-cache=yes
+ 
+  - name: Java | set env
+    action: apt pkg=oracle-java7-set-default state=installed

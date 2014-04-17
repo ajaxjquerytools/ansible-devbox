@@ -1,0 +1,2 @@
+- name: Nginx | Copy ssl folder to {{nginx-dir}}/ssl
+  copy: src=ssl dest={{ nginx_dir }} owner=root group=root mode=0644 directory_mode=yes
