@@ -1,0 +1,8 @@
+---
+
+- hosts: frontend
+  sudo: yes
+  roles:
+     #- role: common
+     - role: nginx
+
